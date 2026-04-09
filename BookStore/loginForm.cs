@@ -1,4 +1,5 @@
-﻿namespace BookStore
+﻿using BookStore.Models;
+namespace BookStore
 {
     public partial class loginForm : Form
     {
@@ -25,8 +26,7 @@
 
         private void btnLogin_Click(object sender, EventArgs e)
         {
-            string correctUser = "admin";
-            string correctPassword = "123";
+            User admin = new User("admin", "123456");
 
             string inputUser = txtUser.Text.Trim();
             string inputPass = txtPass.Text.Trim();
@@ -40,7 +40,7 @@
             try
             {
                 int pin = int.Parse(inputPass);
-                if (inputUser == correctUser && inputPass == correctPassword)
+                if (inputUser == admin.Username && inputPass == admin.Password)
                 {
                     MessageBox.Show("Đăng nhập thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     MainForm main = new MainForm();
