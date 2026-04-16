@@ -43,7 +43,7 @@ namespace BookStore
             try
             {
                 string tensach = txtTenSach.Text.Trim();
-                decimal giatien = numGiaTien.Value;
+                decimal giatien = numGiaTien.Value * 1000;
                 Category theloai = (Category)cboTheLoai.SelectedItem;
                 if (string.IsNullOrEmpty(tensach))
                 {
@@ -52,10 +52,11 @@ namespace BookStore
                     return;
                 }
                 string idmoi = "B" + DateTime.Now.Millisecond.ToString();
-                Book sachmoi = new Book { Id = idmoi, Title = tensach, Price = giatien, Category = theloai};
+                Book sachmoi = new Book { Id = idmoi, Title = tensach, Price = giatien, Category = theloai };
                 Sach.Add(sachmoi);
                 lstBooks.DataSource = null;
                 lstBooks.DataSource = Sach;
+                CapNhapThongKe();
 
                 MessageBox.Show("Thêm sách thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 txtTenSach.Clear();
@@ -77,7 +78,7 @@ namespace BookStore
 
         private void btnSuaSach_Click(object sender, EventArgs e)
         {
-            if(lstBooks.SelectedItem == null)
+            if (lstBooks.SelectedItem == null)
             {
                 MessageBox.Show("Vui lòng chọn một sách để sửa!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -92,6 +93,8 @@ namespace BookStore
                 sachcansua.Category = theloai;
                 lstBooks.DataSource = null;
                 lstBooks.DataSource = Sach;
+                CapNhapThongKe();
+
                 MessageBox.Show("Sửa sách thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 txtTenSach.Clear();
                 cboTheLoai.SelectedIndex = 0;
@@ -117,23 +120,59 @@ namespace BookStore
             cboTheLoai.SelectedIndex = 0;
             dateNgayXuatBan.Value = DateTime.Now;
             txtTenSach.Focus();
+            CapNhapThongKe();
         }
 
         private void lstBooks_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if(lstBooks.SelectedItem != null)
+            if (lstBooks.SelectedItem != null)
             {
                 Book sachduocchon = (Book)lstBooks.SelectedItem;
                 txtTenSach.Text = sachduocchon.Title;
                 numGiaTien.Value = sachduocchon.Price;
-                foreach(Category cat in theloai) {
-                    if(cat.Id == sachduocchon.CategoryId)
+                foreach (Category cat in theloai)
+                {
+                    if (cat.Id == sachduocchon.CategoryId)
                     {
                         cboTheLoai.SelectedItem = cat;
                         break;
                     }
                 }
             }
+        }
+
+        private void btnXoaSach_Click(object sender, EventArgs e)
+        {
+            if(lstBooks.SelectedItem == null)
+            {
+                MessageBox.Show("Vui lòng chọn một sách để xóa!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            Book sachcanxoa = (Book)lstBooks.SelectedItem;
+            DialogResult result = MessageBox.Show($"Bạn có chắc muốn xóa sách '{sachcanxoa.Title}'?", "Xác nhận xóa", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if(result == DialogResult.Yes)
+            {
+                Sach.Remove(sachcanxoa);
+                lstBooks.DataSource = null;
+                lstBooks.DataSource = Sach;
+                MessageBox.Show("Xóa sách thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                txtTenSach.Clear();
+                cboTheLoai.SelectedIndex = 0;
+                numGiaTien.Value = 0;
+                dateNgayXuatBan.Value = DateTime.Now;
+                txtTenSach.Focus();
+            }
+            CapNhapThongKe();
+        }
+        private void CapNhapThongKe()
+        {
+            decimal tonggiasach = 0;
+            foreach (Book sach in Sach)
+            {
+                tonggiasach += sach.Price;
+
+            }
+            lblTongGiaSach.Text = $"Tổng giá sách: {tonggiasach:N0} VND";
         }
     }
 }
