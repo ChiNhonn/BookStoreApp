@@ -6,23 +6,26 @@ using System.Threading.Tasks;
 
 namespace BookStore.Models
 {
-    public class  Category
+    public class Category : BaseEntity
     {
-        public int CategoryId { get; set; }
-        public string CategoryName { get; set; }
+        public string Name { get; set; }
 
         public Category()
         {
 
         }
-        public Category(int Id, string Name)
+        public Category(string Id, string Name)
         {
-            CategoryId = Id;
-            CategoryName = Name;
+            this.Id = Id;
+            this.Name = Name;
+        }
+        public override string GetDisplayName()
+        {
+            return $"{base.GetDisplayName()} - Thể loại {Name}";
         }
         public override string ToString()
         {
-            return CategoryName;
+            return Name;
         }
     }
 }

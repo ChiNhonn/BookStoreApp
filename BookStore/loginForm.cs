@@ -4,6 +4,7 @@ namespace BookStore
     public partial class loginForm : Form
     {
         int loginAttemp = 0;
+        User admin = new User("admin", "123456");
         public loginForm()
         {
             InitializeComponent();
@@ -26,8 +27,6 @@ namespace BookStore
 
         private void btnLogin_Click(object sender, EventArgs e)
         {
-            User admin = new User("admin", "123456");
-
             string inputUser = txtUser.Text.Trim();
             string inputPass = txtPass.Text.Trim();
 
