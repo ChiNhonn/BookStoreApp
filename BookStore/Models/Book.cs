@@ -49,8 +49,10 @@ namespace BookStore.Models
                 _stock = value;
             }
         }
+        public DateTime PublishDate { get; set; }
+
         public Book() { }
-        public Book(string id, string title, string author, string categoryId, Category category, decimal price, int stock)
+        public Book(string id, string title, string author, string categoryId, Category category, decimal price, int stock, DateTime publishDate)
         {
             Id = id;
             Title = title;
@@ -58,6 +60,7 @@ namespace BookStore.Models
             Category = category;
             Price = price;
             Stock = stock;
+            PublishDate = publishDate;
         }
         public override string GetDisplayName()
         {

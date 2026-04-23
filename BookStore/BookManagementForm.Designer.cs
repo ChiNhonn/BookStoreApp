@@ -29,10 +29,6 @@
         private void InitializeComponent()
         {
             grpBookInf = new GroupBox();
-            btnXoaSach = new Button();
-            btnLamMoiForm = new Button();
-            btnSuaSach = new Button();
-            btnThemSach = new Button();
             cboTheLoai = new ComboBox();
             dateNgayXuatBan = new DateTimePicker();
             numGiaTien = new NumericUpDown();
@@ -41,20 +37,23 @@
             lblNgayXuatBan = new Label();
             lblGiatien = new Label();
             lblTenSach = new Label();
+            btnXoaSach = new Button();
+            btnLamMoiForm = new Button();
+            btnSuaSach = new Button();
+            btnThemSach = new Button();
             grpBookList = new GroupBox();
-            lstBooks = new ListBox();
+            dgvBooks = new DataGridView();
             lblTongGiaSach = new Label();
+            grpChucNang = new GroupBox();
             grpBookInf.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numGiaTien).BeginInit();
             grpBookList.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvBooks).BeginInit();
+            grpChucNang.SuspendLayout();
             SuspendLayout();
             // 
             // grpBookInf
             // 
-            grpBookInf.Controls.Add(btnXoaSach);
-            grpBookInf.Controls.Add(btnLamMoiForm);
-            grpBookInf.Controls.Add(btnSuaSach);
-            grpBookInf.Controls.Add(btnThemSach);
             grpBookInf.Controls.Add(cboTheLoai);
             grpBookInf.Controls.Add(dateNgayXuatBan);
             grpBookInf.Controls.Add(numGiaTien);
@@ -69,51 +68,6 @@
             grpBookInf.TabIndex = 0;
             grpBookInf.TabStop = false;
             grpBookInf.Text = "Thông tin chi tiết sách ";
-            grpBookInf.Enter += grpBookInf_Enter;
-            // 
-            // btnXoaSach
-            // 
-            btnXoaSach.Font = new Font("Segoe UI", 13.2000008F, FontStyle.Bold, GraphicsUnit.Point, 163);
-            btnXoaSach.Location = new Point(301, 278);
-            btnXoaSach.Name = "btnXoaSach";
-            btnXoaSach.Size = new Size(139, 50);
-            btnXoaSach.TabIndex = 11;
-            btnXoaSach.Text = "Xóa sách";
-            btnXoaSach.UseVisualStyleBackColor = true;
-            btnXoaSach.Click += btnXoaSach_Click;
-            // 
-            // btnLamMoiForm
-            // 
-            btnLamMoiForm.Font = new Font("Segoe UI", 13.2000008F, FontStyle.Bold, GraphicsUnit.Point, 163);
-            btnLamMoiForm.Location = new Point(768, 277);
-            btnLamMoiForm.Name = "btnLamMoiForm";
-            btnLamMoiForm.Size = new Size(187, 52);
-            btnLamMoiForm.TabIndex = 10;
-            btnLamMoiForm.Text = "Làm mới form";
-            btnLamMoiForm.UseVisualStyleBackColor = true;
-            btnLamMoiForm.Click += btnLamMoiForm_Click;
-            // 
-            // btnSuaSach
-            // 
-            btnSuaSach.Font = new Font("Segoe UI", 13.2000008F, FontStyle.Bold, GraphicsUnit.Point, 163);
-            btnSuaSach.Location = new Point(623, 275);
-            btnSuaSach.Name = "btnSuaSach";
-            btnSuaSach.Size = new Size(139, 52);
-            btnSuaSach.TabIndex = 9;
-            btnSuaSach.Text = "Cập nhập";
-            btnSuaSach.UseVisualStyleBackColor = true;
-            btnSuaSach.Click += btnSuaSach_Click;
-            // 
-            // btnThemSach
-            // 
-            btnThemSach.Font = new Font("Segoe UI", 13.2000008F, FontStyle.Bold, GraphicsUnit.Point, 163);
-            btnThemSach.Location = new Point(463, 276);
-            btnThemSach.Name = "btnThemSach";
-            btnThemSach.Size = new Size(139, 54);
-            btnThemSach.TabIndex = 8;
-            btnThemSach.Text = "Thêm sách";
-            btnThemSach.UseVisualStyleBackColor = true;
-            btnThemSach.Click += btnThemSach_Click;
             // 
             // cboTheLoai
             // 
@@ -124,7 +78,6 @@
             cboTheLoai.Name = "cboTheLoai";
             cboTheLoai.Size = new Size(250, 38);
             cboTheLoai.TabIndex = 7;
-            cboTheLoai.SelectedIndexChanged += cboTheLoai_SelectedIndexChanged;
             // 
             // dateNgayXuatBan
             // 
@@ -143,15 +96,18 @@
             numGiaTien.Name = "numGiaTien";
             numGiaTien.Size = new Size(258, 37);
             numGiaTien.TabIndex = 5;
+            numGiaTien.ThousandsSeparator = true;
             // 
             // txtTenSach
             // 
+            txtTenSach.CharacterCasing = CharacterCasing.Upper;
             txtTenSach.Font = new Font("Segoe UI", 13.2000008F, FontStyle.Italic, GraphicsUnit.Point, 163);
             txtTenSach.Location = new Point(263, 37);
             txtTenSach.Name = "txtTenSach";
             txtTenSach.PlaceholderText = "Nhập tên sách...";
             txtTenSach.Size = new Size(622, 37);
             txtTenSach.TabIndex = 4;
+            txtTenSach.TextChanged += txtTenSach_TextChanged;
             // 
             // lblTheLoai
             // 
@@ -193,26 +149,72 @@
             lblTenSach.TabIndex = 0;
             lblTenSach.Text = "Tên sách: ";
             // 
+            // btnXoaSach
+            // 
+            btnXoaSach.Font = new Font("Segoe UI", 13.2000008F, FontStyle.Bold, GraphicsUnit.Point, 163);
+            btnXoaSach.Location = new Point(27, 97);
+            btnXoaSach.Name = "btnXoaSach";
+            btnXoaSach.Size = new Size(139, 50);
+            btnXoaSach.TabIndex = 11;
+            btnXoaSach.Text = "Xóa sách";
+            btnXoaSach.UseVisualStyleBackColor = true;
+            btnXoaSach.Click += btnXoaSach_Click;
+            // 
+            // btnLamMoiForm
+            // 
+            btnLamMoiForm.Font = new Font("Segoe UI", 13.2000008F, FontStyle.Bold, GraphicsUnit.Point, 163);
+            btnLamMoiForm.Location = new Point(27, 232);
+            btnLamMoiForm.Name = "btnLamMoiForm";
+            btnLamMoiForm.Size = new Size(135, 76);
+            btnLamMoiForm.TabIndex = 10;
+            btnLamMoiForm.Text = "Làm mới form";
+            btnLamMoiForm.UseVisualStyleBackColor = true;
+            btnLamMoiForm.Click += btnLamMoiForm_Click;
+            // 
+            // btnSuaSach
+            // 
+            btnSuaSach.Font = new Font("Segoe UI", 13.2000008F, FontStyle.Bold, GraphicsUnit.Point, 163);
+            btnSuaSach.Location = new Point(27, 165);
+            btnSuaSach.Name = "btnSuaSach";
+            btnSuaSach.Size = new Size(139, 52);
+            btnSuaSach.TabIndex = 9;
+            btnSuaSach.Text = "Cập nhập";
+            btnSuaSach.UseVisualStyleBackColor = true;
+            btnSuaSach.Click += btnSuaSach_Click;
+            // 
+            // btnThemSach
+            // 
+            btnThemSach.Font = new Font("Segoe UI", 13.2000008F, FontStyle.Bold, GraphicsUnit.Point, 163);
+            btnThemSach.Location = new Point(27, 28);
+            btnThemSach.Name = "btnThemSach";
+            btnThemSach.Size = new Size(139, 54);
+            btnThemSach.TabIndex = 8;
+            btnThemSach.Text = "Thêm sách";
+            btnThemSach.UseVisualStyleBackColor = true;
+            btnThemSach.Click += btnThemSach_Click;
+            // 
             // grpBookList
             // 
-            grpBookList.Controls.Add(lstBooks);
+            grpBookList.Controls.Add(dgvBooks);
             grpBookList.Location = new Point(25, 365);
             grpBookList.Name = "grpBookList";
-            grpBookList.Size = new Size(961, 187);
+            grpBookList.Size = new Size(1191, 232);
             grpBookList.TabIndex = 1;
             grpBookList.TabStop = false;
             grpBookList.Text = "Danh sách Sách";
             // 
-            // lstBooks
+            // dgvBooks
             // 
-            lstBooks.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 163);
-            lstBooks.FormattingEnabled = true;
-            lstBooks.ItemHeight = 28;
-            lstBooks.Location = new Point(21, 31);
-            lstBooks.Name = "lstBooks";
-            lstBooks.Size = new Size(919, 144);
-            lstBooks.TabIndex = 0;
-            lstBooks.SelectedIndexChanged += lstBooks_SelectedIndexChanged;
+            dgvBooks.AllowUserToAddRows = false;
+            dgvBooks.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvBooks.Location = new Point(28, 47);
+            dgvBooks.Name = "dgvBooks";
+            dgvBooks.ReadOnly = true;
+            dgvBooks.RowHeadersWidth = 51;
+            dgvBooks.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvBooks.Size = new Size(1126, 179);
+            dgvBooks.TabIndex = 0;
+            dgvBooks.CellContentClick += dgvBooks_CellContentClick;
             // 
             // lblTongGiaSach
             // 
@@ -223,11 +225,25 @@
             lblTongGiaSach.Size = new Size(0, 28);
             lblTongGiaSach.TabIndex = 2;
             // 
+            // grpChucNang
+            // 
+            grpChucNang.Controls.Add(btnLamMoiForm);
+            grpChucNang.Controls.Add(btnXoaSach);
+            grpChucNang.Controls.Add(btnSuaSach);
+            grpChucNang.Controls.Add(btnThemSach);
+            grpChucNang.Location = new Point(1027, 26);
+            grpChucNang.Name = "grpChucNang";
+            grpChucNang.Size = new Size(189, 328);
+            grpChucNang.TabIndex = 3;
+            grpChucNang.TabStop = false;
+            grpChucNang.Text = "Chức năng";
+            // 
             // BookManagementForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1013, 618);
+            ClientSize = new Size(1257, 618);
+            Controls.Add(grpChucNang);
             Controls.Add(lblTongGiaSach);
             Controls.Add(grpBookList);
             Controls.Add(grpBookInf);
@@ -239,6 +255,8 @@
             grpBookInf.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)numGiaTien).EndInit();
             grpBookList.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)dgvBooks).EndInit();
+            grpChucNang.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -258,8 +276,9 @@
         private Button btnLamMoiForm;
         private Button btnSuaSach;
         private Button btnThemSach;
-        private ListBox lstBooks;
         private Button btnXoaSach;
         private Label lblTongGiaSach;
+        private GroupBox grpChucNang;
+        private DataGridView dgvBooks;
     }
 }

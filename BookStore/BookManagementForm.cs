@@ -14,20 +14,10 @@ namespace BookStore
     public partial class BookManagementForm : Form
     {
         List<Category> theloai = new List<Category>();
-        List<Book> Sach = new List<Book>();
+        BindingList<Book> Sach = new BindingList<Book>();
         public BookManagementForm()
         {
             InitializeComponent();
-        }
-
-        private void cboTheLoai_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void grpBookInf_Enter(object sender, EventArgs e)
-        {
-
         }
 
         private void BookManagementForm_Load(object sender, EventArgs e)
@@ -36,6 +26,10 @@ namespace BookStore
             theloai.Add(new Category { Id = "C02", Name = "Khoa học - Viễn tưởng" });
             theloai.Add(new Category { Id = "C03", Name = "Kinh tế - Khởi nghiệp" });
             cboTheLoai.DataSource = theloai;
+            Sach.Add(new Book { Id = "B01", Title = "Đắc Nhân Tâm", Price = 50000, CategoryId = "C01", Category = theloai[0], PublishDate = new DateTime(1936, 10, 1) });
+            Sach.Add(new Book { Id = "B02", Title = "Dế Mèn Phiêu Lưu Ký", Price = 30000, CategoryId = "C01", Category = theloai[0], PublishDate = new DateTime(1941, 5, 1) });
+            Sach.Add(new Book { Id = "B03", Title = "Lão Hạc", Price = 20000, CategoryId = "C01", Category = theloai[0], PublishDate = new DateTime(1908, 1, 1) });
+            dgvBooks.DataSource = Sach;
         }
 
         private void btnThemSach_Click(object sender, EventArgs e)
@@ -43,7 +37,7 @@ namespace BookStore
             try
             {
                 string tensach = txtTenSach.Text.Trim();
-                decimal giatien = numGiaTien.Value * 1000;
+                decimal giatien = numGiaTien.Value;
                 Category theloai = (Category)cboTheLoai.SelectedItem;
                 if (string.IsNullOrEmpty(tensach))
                 {
@@ -54,8 +48,8 @@ namespace BookStore
                 string idmoi = "B" + DateTime.Now.Millisecond.ToString();
                 Book sachmoi = new Book { Id = idmoi, Title = tensach, Price = giatien, Category = theloai };
                 Sach.Add(sachmoi);
-                lstBooks.DataSource = null;
-                lstBooks.DataSource = Sach;
+                dgvBooks.DataSource = null;
+                dgvBooks.DataSource = Sach;
                 CapNhapThongKe();
 
                 MessageBox.Show("Thêm sách thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -78,21 +72,21 @@ namespace BookStore
 
         private void btnSuaSach_Click(object sender, EventArgs e)
         {
-            if (lstBooks.SelectedItem == null)
+            if (dgvBooks.SelectedRows.Count == 0)
             {
                 MessageBox.Show("Vui lòng chọn một sách để sửa!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             try
             {
-                Book sachcansua = (Book)lstBooks.SelectedItem;
+                Book sachcansua = (Book)dgvBooks.SelectedRows[0].DataBoundItem;
                 sachcansua.Title = txtTenSach.Text.Trim();
                 sachcansua.Price = numGiaTien.Value;
                 Category theloai = (Category)cboTheLoai.SelectedItem;
                 sachcansua.CategoryId = theloai.Id;
                 sachcansua.Category = theloai;
-                lstBooks.DataSource = null;
-                lstBooks.DataSource = Sach;
+                dgvBooks.DataSource = null;
+                dgvBooks.DataSource = Sach;
                 CapNhapThongKe();
 
                 MessageBox.Show("Sửa sách thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -123,11 +117,11 @@ namespace BookStore
             CapNhapThongKe();
         }
 
-        private void lstBooks_SelectedIndexChanged(object sender, EventArgs e)
+        private void dgvBooks_SelectionChanged(object sender, EventArgs e)
         {
-            if (lstBooks.SelectedItem != null)
+            if (dgvBooks.SelectedRows.Count > 0)   
             {
-                Book sachduocchon = (Book)lstBooks.SelectedItem;
+                Book sachduocchon = (Book)dgvBooks.SelectedRows[0].DataBoundItem;
                 txtTenSach.Text = sachduocchon.Title;
                 numGiaTien.Value = sachduocchon.Price;
                 foreach (Category cat in theloai)
@@ -143,18 +137,18 @@ namespace BookStore
 
         private void btnXoaSach_Click(object sender, EventArgs e)
         {
-            if(lstBooks.SelectedItem == null)
+            if (dgvBooks.SelectedRows.Count == 0)
             {
                 MessageBox.Show("Vui lòng chọn một sách để xóa!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            Book sachcanxoa = (Book)lstBooks.SelectedItem;
+            Book sachcanxoa = (Book)dgvBooks.SelectedRows[0].DataBoundItem;
             DialogResult result = MessageBox.Show($"Bạn có chắc muốn xóa sách '{sachcanxoa.Title}'?", "Xác nhận xóa", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if(result == DialogResult.Yes)
+            if (result == DialogResult.Yes)
             {
                 Sach.Remove(sachcanxoa);
-                lstBooks.DataSource = null;
-                lstBooks.DataSource = Sach;
+                dgvBooks.DataSource = null;
+                dgvBooks.DataSource = Sach;
                 MessageBox.Show("Xóa sách thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 txtTenSach.Clear();
                 cboTheLoai.SelectedIndex = 0;
@@ -174,5 +168,31 @@ namespace BookStore
             }
             lblTongGiaSach.Text = $"Tổng giá sách: {tonggiasach:N0} VND";
         }
+
+        private void txtTenSach_TextChanged(object sender, EventArgs e)
+        {
+            int cursor = txtTenSach.SelectionStart;
+            txtTenSach.Text = txtTenSach.Text.ToUpper();
+            txtTenSach.SelectionStart = cursor;
+        }
+
+        private void dgvBooks_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0)
+            {
+                Book sachduocchon = (Book)dgvBooks.Rows[e.RowIndex].DataBoundItem;
+                txtTenSach.Text = sachduocchon.Title;
+                numGiaTien.Value = sachduocchon.Price;
+                foreach (Category cat in theloai)
+                {
+                    if (cat.Id == sachduocchon.CategoryId)
+                    {
+                        cboTheLoai.SelectedItem = cat;
+                        break;
+                    }
+                }
+            }
+        }
+
     }
 }
